@@ -44,10 +44,6 @@ def supportsNamespace() {
   return (major == 7 && minor >= 3) || major >= 8
 }
 
-def reactNativeArchitectures() {
-  def value = project.getProperties().get("reactNativeArchitectures")
-  return value ? value.split(",") : ["armeabi-v7a", "x86", "x86_64", "arm64-v8a"]
-}
 
 static def findNodeModules(baseDir) {
   def basePath = baseDir.toPath().normalize()
@@ -87,12 +83,21 @@ android {
     targetSdkVersion getExtOrIntegerDefault("targetSdkVersion")
     buildConfigField "boolean", "IS_NEW_ARCHITECTURE_ENABLED", isNewArchitectureEnabled().toString()
 
-    externalNativeBuild {
-      cmake {
-        cppFlags "-O2 -frtti -fexceptions -Wall -fstack-protector-all"
-        abiFilters (*reactNativeArchitectures())
-      }
+   externalNativeBuild {
+       cmake {
+         cppFlags "-O2 -frtti -fexceptions -Wall -Wno-unused-variable -fstack-protector-all"
+         abiFilters 'x86', 'x86_64', 'armeabi-v7a', 'arm64-v8a'
+         arguments "-DANDROID_STL=c++_shared",
+           "-DNODE_MODULES_DIR=${nodeModules}"
+
+
+       }
     }
+  }
+
+  buildFeatures {
+    buildConfig true
+    prefab=true
   }
 
   externalNativeBuild {
@@ -100,9 +105,9 @@ android {
       path "CMakeLists.txt"
     }
   }
-
-  buildFeatures {
-    buildConfig true
+  
+   packagingOptions {
+    excludes = ["**/libc++_shared.so","**/libjsi.so","**/libreactnativejni.so","META-INF/MANIFEST.MF"]
   }
 
   buildTypes {

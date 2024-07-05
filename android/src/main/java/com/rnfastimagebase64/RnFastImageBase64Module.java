@@ -1,16 +1,24 @@
 package com.rnfastimagebase64;
 
+import android.content.SharedPreferences;
+import android.os.Build;
+import android.preference.PreferenceManager;
 import androidx.annotation.NonNull;
 
-import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.module.annotations.ReactModule;
 
-public class RnFastImageBase64Module extends RnFastImageBase64Spec {
+@ReactModule(name = RnFastImageBase64Module.NAME)
+public class RnFastImageBase64Module extends ReactContextBaseJavaModule {
   public static final String NAME = "RnFastImageBase64";
 
-  RnFastImageBase64Module(ReactApplicationContext context) {
-    super(context);
+
+  private native void nativeInstall(long jsiPtr, String docDir);
+
+  public RnFastImageBase64Module(ReactApplicationContext reactContext) {
+    super(reactContext);
   }
 
   @Override
@@ -19,16 +27,21 @@ public class RnFastImageBase64Module extends RnFastImageBase64Spec {
     return NAME;
   }
 
-  static {
-    System.loadLibrary("rn-fast-image-base64");
+  @ReactMethod(isBlockingSynchronousMethod = true)
+  public boolean install() {
+    try {
+      System.loadLibrary("rn-fast-image-base64");
+      ReactApplicationContext context = getReactApplicationContext();
+      nativeInstall(
+        context.getJavaScriptContextHolder().get(),
+        context.getFilesDir().getAbsolutePath()
+      );
+      return true;
+    } catch (Exception exception) {
+      return false;
+    }
   }
 
-  public static native double nativeMultiply(double a, double b);
 
-  // Example method
-  // See https://reactnative.dev/docs/native-modules-android
-  @ReactMethod
-  public void multiply(double a, double b, Promise promise) {
-    promise.resolve(nativeMultiply(a, b));
-  }
+
 }

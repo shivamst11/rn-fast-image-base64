@@ -1,5 +1,4 @@
 pre-commit:
-  parallel: true
 commit-msg:
   parallel: true
   commands:

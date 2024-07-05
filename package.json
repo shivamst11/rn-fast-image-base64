@@ -151,10 +151,5 @@
         }
       ]
     ]
-  },
-  "codegenConfig": {
-    "name": "RNRnFastImageBase64Spec",
-    "type": "modules",
-    "jsSrcsDir": "src"
   }
 }
