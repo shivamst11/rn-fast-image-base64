@@ -26,7 +26,7 @@ Import the library and use the imageToBase64 function to convert your image:
 import { imageToBase64 } from 'rn-fast-image-base64';
 
 // Convert image to base64
-const base64 = await imageToBase64('file://yourfileurl');
+const base64 = imageToBase64('file://yourfileurl');
 
 ```
 
