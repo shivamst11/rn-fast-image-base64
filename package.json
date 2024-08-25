@@ -34,7 +34,10 @@
   "keywords": [
     "react-native",
     "ios",
-    "android"
+    "android",
+    "base64",
+    "encode",
+    "image"
   ],
   "repository": {
     "type": "git",
